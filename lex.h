@@ -22,5 +22,4 @@ struct lexer {
 };
 
 struct lexer* lexer_new(const char* src);
-void          lexer_free(struct lexer* lex);
 struct token  lexer_next(struct lexer* lex);
