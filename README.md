@@ -1,6 +1,22 @@
 # Infix calculator
 Recursive-descent LL(1) parser for simple infix math. Uses ASTs to build expression nodes.
 
+# Usage
+```c
+#include "parse.h"
+
+/* create lexer from expression */
+struct lexer* lex = lexer_new("4 + 5");
+struct parser*  p = parser_new(lex);
+
+/* parse the expression */
+struct ast_node* n = parser_run(p);
+
+/* get the result */
+double result = eval(n);
+```
+
+
 # Known limitations
 - Ideally `strtod()` does the work and does the overflow/underflow checks. I will either add the checks myself or clean out to use `strtod()`
 
