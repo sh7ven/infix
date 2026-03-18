@@ -95,11 +95,6 @@ struct parser *parser_new(struct lexer *lex)
   return p;
 }
 
-void parser_free(struct parser *p)
-{
-  free(p);
-}
-
 struct ast_node *parser_run(struct parser *p)
 {
   struct ast_node *root = parse_expr(p);
