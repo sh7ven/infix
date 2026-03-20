@@ -1,3 +1,6 @@
+#ifndef ___util
+#define ___util
+
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -12,12 +15,12 @@
   } while (0)
 
 
-void *alloc(unsigned size)
+__attribute__((unused)) static void *alloc(unsigned size) 
 {
   void *out = malloc(size);
-  if (!out) die(("malloc() failed!\n"));
+  if (!out) die((stderr, "malloc() failed!\n"));
 
   return out;
 }
 
-
+#endif

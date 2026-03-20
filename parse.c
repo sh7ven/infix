@@ -5,7 +5,7 @@ static void expect(struct parser *p, enum token_type expected)
   if (p->cur.type != expected)
     die((stderr, "syntax error: unexpected token %d (expected %d)", p->cur.type, expected));
 
-  p->cur = lexer_lext(p->lex);
+  p->cur = lexer_next(p->lex);
 }
 
 static struct ast_node *make_node(enum node_type type, double value,
@@ -30,13 +30,13 @@ static struct ast_node *parse_factor(struct parser *p)
   if (p->cur.type == TOK_NUM)
   {
       node = make_node(ND_NUM, p->cur.value, NULL, NULL);
-      p->cur = lexer_lext(p->lex);
+      p->cur = lexer_next(p->lex);
       return node;
   }
 
   if (p->cur.type == TOK_LBRACK)
   {
-      p->cur = lexer_lext(p->lex);           /* consume '(' */
+      p->cur = lexer_next(p->lex);           /* consume '(' */
       node = parse_expr(p);                  /* parse inner expression */
       expect(p, TOK_RBRACK);                 /* consume ')' */
       return node;
@@ -57,7 +57,7 @@ static struct ast_node *parse_term(struct parser *p)
   while (p->cur.type == TOK_MUL || p->cur.type == TOK_DIV)
   {
     op = (p->cur.type == TOK_MUL) ? ND_MUL : ND_DIV;
-    p->cur = lexer_lext(p->lex);
+    p->cur = lexer_next(p->lex);
     node = make_node(op, 0.0, node, parse_factor(p));
   }
 
@@ -72,7 +72,7 @@ static struct ast_node *parse_expr(struct parser *p)
   while (p->cur.type == TOK_ADD || p->cur.type == TOK_SUB)
   {
     op = (p->cur.type == TOK_ADD) ? ND_ADD : ND_SUB;
-    p->cur = lexer_lext(p->lex);
+    p->cur = lexer_next(p->lex);
     node = make_node(op, 0.0, node, parse_term(p));
   }
 
