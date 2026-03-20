@@ -11,8 +11,8 @@ enum node_type {
 struct ast_node {
   enum node_type   type;
   double           value;
-  struct ast_node* left;
-  struct ast_node* right;
+  struct ast_node *left;
+  struct ast_node *right;
 };
 
 struct parser {
@@ -20,8 +20,8 @@ struct parser {
   struct token  cur; /* for iterating through src */
 };
 
-struct parser*   parser_new(struct lexer* lex);
-void             parser_free(struct parser* p);
-struct ast_node* parser_run(struct parser* p);
-void             ast_free(struct ast_node* node);
-double           eval(const struct ast_node* node);
+struct parser   *parser_new(struct lexer *lex);
+void             parser_free(struct parser *p);
+struct ast_node *parser_run(struct parser *p);
+void             ast_free(struct ast_node *node);
+double           eval(const struct ast_node *node);

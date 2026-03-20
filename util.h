@@ -11,3 +11,13 @@
     exit(EXIT_FAILURE);                                     \
   } while (0)
 
+
+void *alloc(unsigned size)
+{
+  void *out = malloc(size);
+  if (!out) die(("malloc() failed!\n"));
+
+  return out;
+}
+
+

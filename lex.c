@@ -1,18 +1,18 @@
 #include "lex.h"
 
-struct lexer* lexer_new(const char* src)
+struct lexer *lexer_new(const char *src)
 {
-  struct lexer* lex = malloc(sizeof* lex);
-  if (!lex) die((stderr, "malloc() failed"));
+  struct lexer *lex = alloc(sizeof *lex);
+
   lex->src = src;
   lex->pos = 0;
   return lex;
 }
 
-struct token lexer_next(struct lexer* lex)
+struct token lexer_next(struct lexer *lex)
 {
   struct token tok;
-  const char*  src = lex->src;
+  const char  *src = lex->src;
   double       value;
   char         c;
 

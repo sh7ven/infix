@@ -17,9 +17,9 @@ struct token {
 };
 
 struct lexer {
-  const char* src;
+  const char *src;
   int         pos;
 };
 
-struct lexer* lexer_new(const char* src);
-struct token  lexer_next(struct lexer* lex);
+struct lexer *lexer_new(const char *src);
+struct token  lexer_next(struct lexer *lex);

@@ -1,25 +1,18 @@
 #include "parse.h"
 
-static void advance(struct parser *p)
-{
-  p->cur = lexer_next(p->lex);
-}
-
 static void expect(struct parser *p, enum token_type expected)
 {
   if (p->cur.type != expected)
     die((stderr, "syntax error: unexpected token %d (expected %d)", p->cur.type, expected));
 
-  advance(p);
+  p->cur = lexer_lext(p->lex);
 }
 
-static struct ast_node* make_node(enum node_type type, double value,
-                                  struct ast_node* left,
-                                  struct ast_node* right)
+static struct ast_node *make_node(enum node_type type, double value,
+                                  struct ast_node *left,
+                                  struct ast_node *right)
 {
-  struct ast_node* node = malloc(sizeof* node);
-  if (!node) 
-    die((stderr, "malloc() failed"));
+  struct ast_node *node = alloc(sizeof *node);
 
   node->type  = type;
   node->value = value;
@@ -28,24 +21,24 @@ static struct ast_node* make_node(enum node_type type, double value,
   return node;
 }
 
-static struct ast_node* parse_expr(struct parser* p);
+static struct ast_node *parse_expr(struct parser *p);
 
-static struct ast_node* parse_factor(struct parser* p)
+static struct ast_node *parse_factor(struct parser *p)
 {
-  struct ast_node *node;
+  struct ast_node *node = NULL;
 
   if (p->cur.type == TOK_NUM)
   {
       node = make_node(ND_NUM, p->cur.value, NULL, NULL);
-      advance(p);
+      p->cur = lexer_lext(p->lex);
       return node;
   }
 
   if (p->cur.type == TOK_LBRACK)
   {
-      advance(p);           /* consume '(' */
-      node = parse_expr(p); /* parse inner expression */
-      expect(p, TOK_RBRACK);/* consume ')' */
+      p->cur = lexer_lext(p->lex);           /* consume '(' */
+      node = parse_expr(p);                  /* parse inner expression */
+      expect(p, TOK_RBRACK);                 /* consume ')' */
       return node;
   }
 
@@ -63,9 +56,9 @@ static struct ast_node *parse_term(struct parser *p)
 
   while (p->cur.type == TOK_MUL || p->cur.type == TOK_DIV)
   {
-      op = (p->cur.type == TOK_MUL) ? ND_MUL : ND_DIV;
-      advance(p);
-      node = make_node(op, 0.0, node, parse_factor(p));
+    op = (p->cur.type == TOK_MUL) ? ND_MUL : ND_DIV;
+    p->cur = lexer_lext(p->lex);
+    node = make_node(op, 0.0, node, parse_factor(p));
   }
 
   return node;
@@ -78,9 +71,9 @@ static struct ast_node *parse_expr(struct parser *p)
 
   while (p->cur.type == TOK_ADD || p->cur.type == TOK_SUB)
   {
-      op = (p->cur.type == TOK_ADD) ? ND_ADD : ND_SUB;
-      advance(p);
-      node = make_node(op, 0.0, node, parse_term(p));
+    op = (p->cur.type == TOK_ADD) ? ND_ADD : ND_SUB;
+    p->cur = lexer_lext(p->lex);
+    node = make_node(op, 0.0, node, parse_term(p));
   }
 
   return node;
@@ -88,8 +81,7 @@ static struct ast_node *parse_expr(struct parser *p)
 
 struct parser *parser_new(struct lexer *lex)
 {
-  struct parser *p = malloc(sizeof(*p));
-  if (!p) die((stderr, "malloc() failed"));
+  struct parser *p = alloc(sizeof *p);
   p->lex = lex;
   p->cur = lexer_next(lex); /* prime the lookahead */
   return p;
